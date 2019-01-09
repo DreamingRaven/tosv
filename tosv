@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+
+# @Author: George Onoufriou <archer>
+# @Date:   2018-10-17
+# @Filename: xsv2xsv.py
+# @Last modified by:   archer
+# @Last modified time: 2018-11-01
+# @License: Please see LICENSE file in project root (MIT)
+
+
+
+import os, sys, argparse, subprocess
+
+
+
+def main():
+    description = "Short script file to convert x seperated value files to csv files"
+    args = argz(sys.argv[1:], description=description)
+    # get logger
+    logger = Log(logLevel=3)
+    log = logger.log
+
+    for file in args["data"]:
+        catPipe = ["cat", file]
+        trPipe =  ["tr", str(args["in_seperator"]), str(args["out_seperator"])]
+        procez = subprocess.Popen(catPipe, stdout=subprocess.PIPE, shell=False)
+        with open(str(file + args["out_suffix"]), "w") as outFile:
+            subprocess.Popen(trPipe, stdin=procez.stdout, stdout=outFile, stderr=subprocess.PIPE)
+        procez.stdout.close()
+
+
+
+
+def argz(argv, description=None):
+    parser = argparse.ArgumentParser(description=description)
+
+    parser.add_argument("-i", "--in-seperator",
+        default=str("\t"),
+        help="set the input file seperator to be converted from")
+    parser.add_argument("-o", "--out-seperator",
+        default=str(","),
+        help="set the output file seperator to be converted to")
+    parser.add_argument("-s", "--out-suffix",
+        default=str(".csv"),
+        help="set the output file suffix/ extension to attempt to write to")
+    parser.add_argument("-d", "--data", nargs='+',
+        default=[],
+        help="path to each file desired to be converted")
+
+    # parse the initial args which have only been slightly sanitised
+    args = vars(parser.parse_args(argv))
+
+    # list args which are paths to be made cross platform
+    pathArgNames = ["data"]
+
+    # return normalised args with cross platform paths
+    return normArgs(args=args, pathArgs=pathArgNames)
+
+
+
+def normArgs(args, pathArgs):
+    for argName in pathArgs:
+        if(type(args[argName]) != list):
+            args[argName] = str(os.path.abspath(args[argName]))
+        else:
+            tempList = list()
+            for listItem in args[argName]:
+                tempList.append(str(os.path.abspath(listItem)))
+            args[argName] = tempList
+    return args
+
+
+
+class Log(object):
+
+    import os, sys
+    from colorama import Fore, Back, Style, init
+
+    className = "Log"
+    prePend = "[ " + os.path.basename(sys.argv[0]) + " -> " + className + "] "
+    prePend_parent = "[ " + os.path.basename(sys.argv[0]) + " ]"
+    init(autoreset=True) # forces colorama to auto reset colors
+
+    def __init__(self, logLevel=-1):
+        self.logLevel = logLevel
+
+    def log(self, text, minLogLevel=3, colour=None):
+        if(minLogLevel==-1):
+            print(text) # this allows for universal formating as no prePending
+        elif(minLogLevel==0) and (self.logLevel >= minLogLevel):
+            print(self.Fore.GREEN + self.prePend_parent + " [ info ] " + str(text))
+        elif(minLogLevel==1) and (self.logLevel >= minLogLevel):
+            print(self.Fore.YELLOW + self.prePend_parent + " [ warn ] " + str(text))
+        elif(minLogLevel==2) and (self.logLevel >= minLogLevel):
+            print(self.Fore.RED + self.prePend_parent + " [ error ] " + str(text))
+        elif(minLogLevel==3) and (self.logLevel >= minLogLevel):
+            print(self.Fore.MAGENTA +self.prePend_parent + " [ debug ] " + str(text))
+
+
+
+if __name__ == "__main__":
+    main()

@@ -11,10 +11,10 @@
 # Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
 pkgname=tosv-git
 pkgsrcname="tosv"
-pkgver=0.r0
+pkgver=0.0.1.r0.773de77
 pkgrel=1
 pkgdesc="Simple delimited file type converter"
-arch=('x86_64')
+arch=('any')
 
 # nemesyst source code url
 url="https://github.com/DreamingRaven/tosv"

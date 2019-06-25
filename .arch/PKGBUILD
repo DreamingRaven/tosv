@@ -1,14 +1,4 @@
-# @Author: George Onoufriou <georgeraven>
-# @Date:   2019-01-09
-# @Filename: PKGBUILD
-# @Last modified by:   georgeraven
-# @Last modified time: 2019-01-09
-# @License: Please see LICENSE in project root.
-# @Copyright: George Onoufriou
-
-
-
-# Maintainer: George Raven <GeorgeRavenCommunity AT outlook dot com>
+# Maintainer: George Raven <GeorgeRavenCommunity AT pm dot me>
 pkgname=tosv-git
 pkgsrcname="tosv"
 pkgver=0.0.1.r0.773de77
